@@ -42,5 +42,9 @@ zdf_z2_c180 <- data.frame(zdf[180, "zsquared"])
 # data into R so that the missing values are properly coded. **Note the missing values are
 # reported in the data as a period (i.e., “.”). How do you know the data were read
 # correctly?
-  
+
+file_path <- file.choose() # select the file
+df <- read.csv(file_path)  # read in the data
+str(df)                    # check the structure of the df
+df[df == "."] <- NA        # replace " . " with NAs
 
