@@ -1,11 +1,126 @@
 ---
 title: "Intro to Data Visualisation"
 author: "Billy Lozowski"
-date: '`r Sys.Date()`'
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## Question 1
+
+1a. The three elements required to produce a ggplot are the data, the mapping/aesthetics (x & y), and the geometry (geom_point() / geom_boxplot() etc.).
+
+1b. A geom is the plot type. geom_point() for example produces a scatter plot.
+
+1c. A facet is a panel which separates the data by a specific grouping (i.e. treatment type, gender, country etc.).
+
+1d. Layering is the process of adding different elements to a ggplot. Layers added later are added on top ofearlier ones, which need to be considered if a specfic aspect of the plot is more important than another (i.e. a lm line over scatter data).
+
+1e. x and y variables, as well as colour/shape arguments are placed within the aes() aspect of the plot.
+
+## Question 2
+
+```{r import data}
+library(tidyverse)
+file_path <- file.choose()
+df_myo <- read.csv(file_path, na.strings = "na")
+glimpse(df_myo)
+
+```
+
+```{r boxplots}
+ggplot(df_myo, aes(Treatment, DON, colour = Cultivar)) +
+  geom_boxplot() +
+  xlab("") +
+  ylab("DON (ppm)") +
+  theme_classic()
+
+```
+
+## Question 3
+
+```{r bar charts}
+ggplot(df_myo, aes(Treatment, DON, colour = Cultivar)) +
+  stat_summary(fun = mean, geom = "bar", position = "dodge") +
+  stat_summary(fun.data = mean_se, geom = "errorbar", position = "dodge")
+  xlab("") +
+  ylab("DON (ppm)") +
+  theme_classic()
+
+```
+
+## Question 4
+
+```{r boxplot and scatter points}
+ggplot(df_myo, aes(Treatment, DON, fill = Cultivar)) +
+  geom_boxplot() +
+  xlab("") +
+  ylab("DON (ppm)") +
+  geom_point(shape = 21, position = position_jitterdodge()) +
+  theme_classic()
+
+```
+
+## Question 5
+
+```{r}
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+ggplot(df_myo, aes(Treatment, DON, color = Cultivar)) +
+  geom_boxplot() +
+  xlab("") +
+  ylab("DON (ppm)") +
+  geom_point(shape = 21, position = position_jitterdodge()) +
+  scale_color_manual(values = cbbPalette) +
+  theme_classic()
+
+```
+
+## Question 6
+
+```{r faceted}
+ggplot(df_myo, aes(Treatment, DON, fill = Cultivar)) +
+  geom_boxplot() +
+  xlab("") +
+  ylab("DON (ppm)") +
+  geom_point(shape = 21, position = position_jitterdodge()) +
+  facet_wrap(~Cultivar) +
+  theme_classic()
+
+```
+
+## Question 7
+
+```{r adjust the alpha}
+ggplot(df_myo, aes(Treatment, DON, fill = Cultivar)) +
+  geom_boxplot() +
+  xlab("") +
+  ylab("DON (ppm)") +
+  geom_point(shape = 21, position = position_jitterdodge(), alpha = 0.5) +
+  facet_wrap(~Cultivar) +
+  theme_classic()
+
+```
+
+# Question 8
+
+```{r ridge plot}
+# install.packages("ggridges")
+library(ggridges)
+ggplot(df_myo, aes(x = DON, y = Treatment, fill = Cultivar)) +
+  geom_density_ridges() +
+  theme_ridges() + 
+  theme(legend.position = "none") +
+  xlab("DON (ppm)") +
+  ylab("") + 
+  facet_wrap(~Cultivar, scales = "free")
+```
+
+
+
+
+
 
