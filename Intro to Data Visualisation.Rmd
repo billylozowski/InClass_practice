@@ -123,4 +123,4 @@ ggplot(df_myo, aes(x = DON, y = Treatment, fill = Cultivar)) +
 
 ## Question 9
 
-When I forked the repository, it asked if I wanted to create a copy in my own GitHub. It looks as if forking is a way to create an identical copy so more than one person can work on a project?!
+When I forked the repository, it asked if I wanted to create a copy in my own GitHub. It looks as if forking is a way to create an identical copy so you can use an existing project as a template for your own work.
