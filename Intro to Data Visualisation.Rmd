@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# All codes can be found at: https://github.com/billylozowski/InClass_practice.git
+
 ## Question 1
 
 1a. The three elements required to produce a ggplot are the data, the mapping/aesthetics (x & y), and the geometry (geom_point() / geom_boxplot() etc.).
@@ -105,7 +107,7 @@ ggplot(df_myo, aes(Treatment, DON, fill = Cultivar)) +
 
 ```
 
-# Question 8
+## Question 8
 
 ```{r ridge plot}
 # install.packages("ggridges")
@@ -119,8 +121,6 @@ ggplot(df_myo, aes(x = DON, y = Treatment, fill = Cultivar)) +
   facet_wrap(~Cultivar, scales = "free")
 ```
 
+## Question 9
 
-
-
-
-
+When I forked the repository, it asked if I wanted to create a copy in my own GitHub. It looks as if forking is a way to create an identical copy so more than one person can work on a project?!
