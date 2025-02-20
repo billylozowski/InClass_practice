@@ -101,7 +101,7 @@ p4
 
 Use ggarrange function to combine all three figures into one with three columns and one row. Set the labels for the subplots as A, B and C. Set the option common.legend = T within ggarage function. What did the common.legend option do?
 
-__the common.legend option returned and NA value__
+__the common.legend option shows Cultivar__
 
 ```{r Q4}
 fig1 <- ggarrange(          
@@ -109,7 +109,7 @@ fig1 <- ggarrange(
   labels = "auto",        
   nrow = 1,               # set rows
   ncol = 3,               # set columns
-  common.legend = TRUE
+  common.legend = T
   )
 fig1
 
