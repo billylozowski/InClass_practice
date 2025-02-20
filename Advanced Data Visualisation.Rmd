@@ -1,0 +1,154 @@
+---
+title: "Advanced Data Visualisation"
+author: "Billy Lozowski"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages and data}
+library(tidyverse)
+library(ggpubr)
+library(ggrepel)
+
+mycotoxin <-read.csv("~/Academics/2. Auburn/Classes/10. Spring 2025/PLPA 5820 - Principles and Techniques of Reproducible Science/In-Class Practice/InClass_practice/MycotoxinData.csv", na.strings = "na")
+str(mycotoxin)
+
+mycotoxin$Cultivar <- as.factor(mycotoxin$Cultivar) # convert Cultivar to factor levels
+
+```
+
+
+# Question 1
+
+Using ggplot, create a boxplot of DON by Treatment so that the plot looks like the
+image below.
+  a. Jitter points over the boxplot and fill the points and boxplots Cultivar with two
+colors from the cbbPallete introduced last week.
+  b. Change the transparency of the
+jittered points to 0.6.
+  c. The y-axis should be labeled "DON(ppm)", and the x-axis should be
+left blank.
+  d. The plot should use a classic theme
+  e. The plot should also be faceted by Cultivar
+
+```{r Q1}
+cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+p1 <- ggplot(mycotoxin, aes(Treatment, DON, fill = Cultivar)) +       # set plot mapping
+  geom_boxplot(position = position_dodge(0.85), outlier.shape = NA) + # dodge the boxplots + hide outliers
+  geom_jitter(shape = 21, width = 0.3, alpha = 0.6) +                 # set point shape, dodge width, and transparency
+  scale_fill_manual(values = c(cbbPalette[(3)], cbbPalette[(4)])) +   # specify fill colours
+  labs(x = "",                                                        # define labels
+       y = "DON (ppm)") +
+  theme_classic() +
+  facet_wrap(~Cultivar)                                               # separate plots by Cultivar
+p1
+
+```
+
+# Question 2
+
+Change the factor order level so that the treatment “NTC” is first, followed by “Fg”, “Fg + 37”, “Fg + 40”, and “Fg + 70
+
+```{r Q2}
+# set factor levels
+mycotoxin$Treatment <- factor(mycotoxin$Treatment, levels = c("NTC", "Fg", "Fg + 37", "Fg + 40", "Fg + 70"))
+
+p2 <- ggplot(mycotoxin, aes(Treatment, DON, fill = Cultivar)) +       # set plot mapping
+  geom_boxplot(position = position_dodge(0.85), outlier.shape = NA) + # dodge the boxplots + hide outliers
+  geom_jitter(shape = 21, width = 0.3, alpha = 0.6) +                 # set point shape, dodge width, and transparency
+  scale_fill_manual(values = c(cbbPalette[(3)], cbbPalette[(4)])) +   # specify fill colours
+  labs(x = "",                                                        # define labels
+       y = "DON (ppm)") +
+  theme_classic() +
+  facet_wrap(~Cultivar)                                               # separate plots by Cultivar
+p2
+
+```
+
+# Question 3
+
+Change the y-variable to plot X15ADON and MassperSeed_mg. The y-axis label should now be “15ADON” and “Seed Mass (mg)”. Save plots made in questions 1 and 3 into three separate R objects.
+
+```{r Q3}
+p3 <- ggplot(mycotoxin, aes(Treatment, X15ADON, fill = Cultivar)) +          # mapping
+  geom_boxplot(position = position_dodge(0.85), outlier.shape = NA) +        # boxplot mapping
+  geom_jitter(shape = 21, width = 0.3, alpha = 0.6) +                        # jitter mapping
+  scale_fill_manual(values = c(cbbPalette[(3)], cbbPalette[(4)])) +          # fill colours
+  labs(x = "",                                                               # labels
+       y = "15ADON") +
+  theme_classic() +
+  facet_wrap(~Cultivar)                                                      # separate plots
+p3
+
+p4 <- ggplot(mycotoxin, aes(Treatment, MassperSeed_mg, fill = Cultivar)) +   # mapping
+  geom_boxplot(position = position_dodge(0.85), outlier.shape = NA) +        # boxplot mapping
+  geom_jitter(shape = 21, width = 0.3, alpha = 0.6) +                        # jitter mapping
+  scale_fill_manual(values = c(cbbPalette[(3)], cbbPalette[(4)])) +          # fill colours
+  labs(x = "",                                                               # labels
+       y = "Seed Mass (mg)") +
+  theme_classic() +
+  facet_wrap(~Cultivar)                                                      # separate plots
+p4
+
+```
+
+# Question 4
+
+Use ggarrange function to combine all three figures into one with three columns and one row. Set the labels for the subplots as A, B and C. Set the option common.legend = T within ggarage function. What did the common.legend option do?
+
+__the common.legend option returned and NA value__
+
+```{r Q4}
+fig1 <- ggarrange(          
+  p1, p3, p4,             # select plot objects
+  labels = "auto",        
+  nrow = 1,               # set rows
+  ncol = 3,               # set columns
+  common.legend = TRUE
+  )
+fig1
+
+```
+
+# Question 5
+
+Use geom_pwc() to add t.test pairwise comparisons to the three plots made above. Save each plot as a new R object, and combine them again with ggarange as you did in question 4.
+
+```{r Q5}
+
+P1 <- p1 + 
+  stat_compare_means(method = "anova") +  
+  geom_pwc(aes(group = Treatment),  # specify which means you want to compare
+               method = "t.test",
+               label = "{p.adj.format}{p.adj.signif}")
+
+P3 <- p3 +
+  stat_compare_means(method = "anova") +  
+  geom_pwc(aes(group = Treatment),  # specify which means you want to compare
+               method = "t.test",
+               label = "{p.adj.format}{p.adj.signif}")
+
+P4 <- p4 +
+  stat_compare_means(method = "anova") +  
+  geom_pwc(aes(group = Treatment),  # specify which means you want to compare
+               method = "t.test",
+               label = "{p.adj.format}{p.adj.signif}")
+
+# arrange plots + stats in combined figure
+fig2 <- ggarrange(
+  P1, P3, P4,        # select plot objects
+  labels = "auto",
+  nrow = 1,
+  ncol = 3,
+  legend = FALSE     # remove legend
+)
+fig2
+
+```
+
+
